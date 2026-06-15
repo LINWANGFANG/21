@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>机器学习基础知识过关测试 | 赛博霓虹测验</title>
+    <title>机器学习测试 | 历史成绩档案 · 赛博终端</title>
     <style>
         * {
             margin: 0;
@@ -12,438 +12,610 @@
         }
 
         body {
-            min-height: 100vh;
-            background: #0a0a0a;
+            background: #0a0a0f;
             background-image: 
                 linear-gradient(rgba(0, 243, 255, 0.08) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 243, 255, 0.08) 1px, transparent 1px);
             background-size: 40px 40px;
-            font-family: 'Segoe UI', 'Courier New', 'Fira Code', monospace;
-            padding: 2rem 1.5rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Share Tech Mono', 'Courier New', 'Fira Code', monospace;
+            padding: 1.5rem 1rem;
             position: relative;
+            min-height: 100vh;
         }
 
-        /* 主容器 - 半透明玻璃质感 + 霓虹边框 */
-        .exam-container {
-            max-width: 1300px;
-            width: 100%;
-            background: rgba(10, 10, 20, 0.75);
-            backdrop-filter: blur(8px);
-            border-radius: 32px;
-            border: 1px solid rgba(0, 243, 255, 0.5);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.05);
-            padding: 2rem 2rem 2.5rem;
-            transition: all 0.3s ease;
-        }
-
-        /* 扫光动画效果 */
-        .exam-container {
-            position: relative;
-            overflow: hidden;
-        }
-        .exam-container::before {
-            content: '';
-            position: absolute;
+        /* 扫光动画 */
+        body::before {
+            content: "";
+            position: fixed;
             top: -50%;
-            left: -60%;
+            left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(115deg, rgba(0,243,255,0) 10%, rgba(0,243,255,0.08) 40%, rgba(255,0,229,0.05) 60%, rgba(0,243,255,0) 90%);
+            background: linear-gradient(115deg, 
+                transparent 30%, 
+                rgba(0, 243, 255, 0.04) 45%, 
+                rgba(255, 0, 229, 0.03) 55%,
+                transparent 70%);
             transform: rotate(25deg);
+            animation: scanline 12s infinite linear;
             pointer-events: none;
-            animation: scanMove 12s infinite linear;
-        }
-        @keyframes scanMove {
-            0% { transform: translateX(-30%) rotate(25deg); }
-            100% { transform: translateX(30%) rotate(25deg); }
+            z-index: 1;
         }
 
-        /* 标题区 */
-        .cyber-title {
-            text-align: center;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid rgba(0, 243, 255, 0.6);
-            padding-bottom: 1rem;
+        @keyframes scanline {
+            0% { transform: rotate(25deg) translate(-30%, -30%); }
+            100% { transform: rotate(25deg) translate(30%, 30%); }
         }
-        h1 {
-            font-size: 2.8rem;
-            letter-spacing: 3px;
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 霓虹标题 */
+        .hero-title {
+            text-align: center;
+            font-size: 2.3rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            font-family: 'Share Tech Mono', monospace;
             text-transform: uppercase;
             background: linear-gradient(135deg, #00f3ff, #ff00e5, #b400ff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 8px #00f3ff, 0 0 15px #ff00e5;
-            font-weight: 700;
+            text-shadow: 0 0 8px rgba(0, 243, 255, 0.7);
+            margin-bottom: 0.3rem;
         }
+
         .sub {
+            text-align: center;
             color: #b0f0ff;
+            border-bottom: 1px solid #00f3ff80;
+            display: inline-block;
+            width: auto;
+            margin: 0 auto 1.8rem auto;
+            padding-bottom: 0.6rem;
             font-size: 0.9rem;
-            margin-top: 8px;
             letter-spacing: 1px;
-            text-shadow: 0 0 3px #00f3ff;
         }
 
-        /* 计分板区域 */
-        .info-panel {
+        /* 统计卡片区 */
+        .stats-grid {
             display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            background: rgba(0, 0, 0, 0.55);
-            border-radius: 20px;
-            padding: 0.8rem 1.8rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(0, 243, 255, 0.4);
+            gap: 1.2rem;
             flex-wrap: wrap;
-            gap: 15px;
-        }
-        .score-badge, .rule-badge {
-            font-family: monospace;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        .score-badge span, .rule-badge span {
-            color: #ff00e5;
-            text-shadow: 0 0 5px #ff00e5;
-            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            justify-content: center;
         }
 
-        /* 题目列表网格布局 */
-        .questions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
-        /* 单个卡片题目 */
-        .question-card {
-            background: rgba(13, 13, 26, 0.7);
-            border: 1px solid rgba(0, 243, 255, 0.4);
-            border-radius: 24px;
-            padding: 1.2rem 1.5rem;
-            transition: all 0.2s;
+        .stat-card {
+            background: rgba(10, 10, 20, 0.7);
             backdrop-filter: blur(4px);
+            border-radius: 28px;
+            border: 1px solid rgba(0, 243, 255, 0.5);
+            padding: 1rem 1.8rem;
+            text-align: center;
+            flex: 1;
+            min-width: 140px;
+            transition: all 0.2s;
         }
-        .question-card:hover {
+
+        .stat-card:hover {
             border-color: #00f3ff;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
-            background: rgba(20, 20, 40, 0.8);
+            box-shadow: 0 0 15px #00f3ff;
+            transform: translateY(-3px);
         }
-        .q-title {
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #8ab3ff;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
             font-weight: bold;
             color: #00f3ff;
-            font-size: 1rem;
-            margin-bottom: 12px;
+            text-shadow: 0 0 4px #00f3ff;
+        }
+
+        /* 双栏布局：左侧图表，右侧列表 */
+        .history-dashboard {
             display: flex;
-            gap: 8px;
-            align-items: baseline;
+            gap: 1.8rem;
             flex-wrap: wrap;
         }
-        .q-text {
-            color: #e0e0ff;
-            font-size: 1rem;
-            line-height: 1.4;
-            margin-bottom: 14px;
-            font-weight: 500;
-            word-break: break-word;
+
+        .chart-panel {
+            flex: 1.4;
+            min-width: 280px;
+            background: rgba(10, 10, 20, 0.65);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            border: 1px solid rgba(0, 243, 255, 0.5);
+            padding: 1.2rem;
         }
-        .options {
+
+        .list-panel {
+            flex: 1;
+            min-width: 260px;
+            background: rgba(10, 10, 20, 0.65);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            border: 1px solid rgba(0, 243, 255, 0.5);
+            padding: 1.2rem;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin: 10px 0 6px;
-        }
-        .option {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            color: #ccddf8;
-            font-size: 0.9rem;
-            padding: 5px 8px;
-            border-radius: 12px;
-            transition: 0.1s;
-        }
-        .option:hover {
-            background: rgba(0, 243, 255, 0.15);
-        }
-        input[type="radio"] {
-            accent-color: #ff00e5;
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-        label {
-            cursor: pointer;
-            flex: 1;
         }
 
-        /* 提交按钮 霓虹风格 */
-        .submit-area {
+        .panel-title {
+            font-size: 1.3rem;
             text-align: center;
-            margin-top: 20px;
+            color: #ff00e5;
+            text-shadow: 0 0 3px #ff00e5;
+            border-bottom: 1px dashed #00f3ff;
+            padding-bottom: 8px;
+            margin-bottom: 1rem;
         }
-        .btn-submit {
-            background: transparent;
-            border: 2px solid #00f3ff;
-            color: #00f3ff;
-            font-size: 1.4rem;
+
+        .chart-container {
+            position: relative;
+            margin-bottom: 0.8rem;
+        }
+
+        canvas {
+            width: 100%;
+            background: #0a0a14;
+            border-radius: 20px;
+            padding: 0.2rem;
+        }
+
+        .record-list {
+            flex: 1;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .record-item {
+            background: rgba(0, 243, 255, 0.08);
+            margin: 8px 0;
+            padding: 8px 12px;
+            border-left: 3px solid #00f3ff;
+            color: #caf0ff;
+            font-family: monospace;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.1s;
+        }
+
+        .record-item:hover {
+            background: rgba(0, 243, 255, 0.2);
+            border-left-color: #ff00e5;
+        }
+
+        .record-date {
+            font-size: 0.75rem;
+        }
+
+        .record-score {
             font-weight: bold;
-            padding: 12px 40px;
-            border-radius: 60px;
+            color: #00f3ff;
+            font-size: 1.1rem;
+        }
+
+        .badge-pass {
+            color: #36c96b;
+            text-shadow: 0 0 2px #36c96b;
+        }
+
+        .badge-fail {
+            color: #ff6680;
+        }
+
+        .empty-history {
+            color: #6688aa;
+            text-align: center;
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: 1.5px solid #00f3ff;
+            background: transparent;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
             cursor: pointer;
             font-family: monospace;
-            letter-spacing: 3px;
-            transition: 0.25s;
-            box-shadow: 0 0 8px rgba(0,243,255,0.3);
-        }
-        .btn-submit:hover:not(:disabled) {
-            background: #00f3ff;
-            color: #0a0a0a;
-            box-shadow: 0 0 20px #00f3ff, 0 0 8px #ff00e5;
-            border-color: #ff00e5;
-            transform: scale(1.02);
-        }
-        .btn-submit:disabled {
-            border-color: #555;
-            color: #888;
-            cursor: not-allowed;
-            box-shadow: none;
-            background: #1f1f2f;
-        }
-        /* 结果面板 */
-        .result-panel {
-            margin-top: 30px;
-            background: rgba(0, 0, 0, 0.65);
-            border-radius: 28px;
-            padding: 1.2rem 1.8rem;
-            border-left: 6px solid #00f3ff;
-            border-right: 2px solid #ff00e5;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #f0f0ff;
+            color: #00f3ff;
             transition: 0.2s;
         }
-        .pass {
-            color: #00ffc3;
-            text-shadow: 0 0 6px #00ffc3;
+
+        button:hover {
+            background: #00f3ff;
+            color: #0a0a0f;
+            box-shadow: 0 0 15px #00f3ff;
+            transform: scale(1.02);
         }
-        .fail {
-            color: #ff66aa;
+
+        .btn-danger {
+            border-color: #ff00e5;
+            color: #ff00e5;
+        }
+
+        .btn-danger:hover {
+            background: #ff00e5;
+            color: #0a0a0a;
+            box-shadow: 0 0 15px #ff00e5;
+        }
+
+        .btn-back {
+            border-color: #b400ff;
+            color: #b400ff;
         }
 
         footer {
             text-align: center;
-            margin-top: 20px;
             font-size: 0.7rem;
-            opacity: 0.7;
-            color: #b400ff;
-        }
-
-        @media (max-width: 680px) {
-            .questions-grid {
-                grid-template-columns: 1fr;
-            }
-            .exam-container {
-                padding: 1.2rem;
-            }
-            h1 {
-                font-size: 1.9rem;
-            }
+            color: #50a0c0;
+            margin-top: 2.5rem;
         }
     </style>
 </head>
 <body>
-<div class="exam-container">
-    <div class="cyber-title">
-        <h1>⚡ 机器学习基础知识过关测试 ⚡</h1>
-        <div class="sub">「 看插图读故事 · 霓虹试炼 」</div>
-    </div>
-    <div class="info-panel">
-        <div class="rule-badge">📋 题型：单选题 · 共20题 · 每题5分 · 满分100分</div>
-        <div class="score-badge">🎯 过关门槛：≥80分 &nbsp;|&nbsp; <span>激励成就系统</span></div>
+<div class="container">
+    <div class="hero-title">📀 历史成绩档案 · 机器学习终端</div>
+    <div style="text-align: center;"><span class="sub">✦ 成绩趋势 | 历史回溯 | 加密存储 ✦</span></div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="stat-label">总测验次数</div><div class="stat-value" id="totalCount">0</div></div>
+        <div class="stat-card"><div class="stat-label">平均分</div><div class="stat-value" id="avgScore">0</div></div>
+        <div class="stat-card"><div class="stat-label">最高分</div><div class="stat-value" id="maxScore">0</div></div>
+        <div class="stat-card"><div class="stat-label">最低分</div><div class="stat-value" id="minScore">0</div></div>
+        <div class="stat-card"><div class="stat-label">过关次数(≥80)</div><div class="stat-value" id="passCount">0</div></div>
     </div>
 
-    <div id="questionsArea" class="questions-grid"></div>
+    <div class="history-dashboard">
+        <!-- 左侧曲线图区域 -->
+        <div class="chart-panel">
+            <div class="panel-title">📈 得分趋势曲线</div>
+            <div class="chart-container">
+                <canvas id="trendCanvas" width="500" height="240" style="width:100%; height:auto; max-height:240px; background:#0a0a14; border-radius:16px;"></canvas>
+            </div>
+            <div style="font-size:0.7rem; text-align:center; color:#0af;">📊 横轴: 测验次序 (第N次) &nbsp;&nbsp; 纵轴: 得分(0-100)</div>
+        </div>
 
-    <div class="submit-area">
-        <button id="submitBtn" class="btn-submit" disabled>🔒 提交试卷 🔒</button>
+        <!-- 右侧历史列表 -->
+        <div class="list-panel">
+            <div class="panel-title">📋 历史记录明细</div>
+            <div id="historyRecordList" class="record-list">
+                <div class="empty-history">⏳ 加载中...</div>
+            </div>
+            <div class="action-buttons">
+                <button id="refreshBtn">🔄 刷新数据</button>
+                <button id="clearAllHistoryBtn" class="btn-danger">🗑 清空全部历史</button>
+                <button id="backToTestBtn" class="btn-back">📚 返回测验主页</button>
+            </div>
+            <div style="font-size:0.6rem; text-align:center; margin-top:12px; color:#4a8fbb;">数据存储于本地 | 与测验页面共享</div>
+        </div>
     </div>
-    <div id="resultPanel" class="result-panel" style="display: none;"></div>
-    <footer>✧ 基于《初识人工智能》&《看插图读故事了解机器学习》双讲义命题 | 答案非明文 ✧</footer>
+    <footer>⚡ 成绩档案独立终端 | 所有记录加密存储于浏览器本地</footer>
 </div>
 
 <script>
-    // --------------------------------------------------------------
-    // 加密存储: 所有题目和答案均采用编码映射，避免源码直接看到答案。
-    // 简单的Base64 + 反转编码，确保答案不以明文显示。
-    function encodeAnswer(ans) {
-        // ans 形如 'A','B','C','D' -> 偏移+反转base64
-        let code = btoa(ans);
-        code = code.split('').reverse().join('');
-        return code;
-    }
-    function decodeAnswer(encoded) {
-        let rev = encoded.split('').reverse().join('');
-        return atob(rev);
-    }
+    // ======================= 历史记录管理 (与主测验页面完全兼容，统一localStorage key) =======================
+    const STORAGE_KEY = "cyber_ml_history";
     
-    // 题库全部基于两份附件内容，不重复，涵盖机器学习核心概念、监督/无监督/强化学习、深度学习、GPU、神经网络、相关因果等。
-    const rawQuestions = [
-        { text: "根据《看插图读故事了解机器学习》，故事中小孩通过观察几十个“轮子”例子自己总结出特征，这体现了机器学习的什么核心思想？", options: ["给规则，得结果", "看例子，自己悟", "固定程序执行", "人工编写所有规则"], correct: "B" },
-        { text: "传统编程与机器学习的思路区别，以下描述正确的是？", options: ["传统编程给规则和数据得结果，机器学习给数据和结果得规则", "两者完全一样", "机器学习不需要数据", "传统编程依赖反向传播"], correct: "A" },
-        { text: "关于垃圾邮件过滤，传统编程方式的缺陷是什么？", options: ["规则无法应对新变种", "需要大量标注数据", "训练速度太慢", "必须使用GPU"], correct: "A" },
-        { text: "故事三中，“有答案、有老师、刷题模式”指的是哪种学习方式？", options: ["监督学习", "无监督学习", "强化学习", "深度学习"], correct: "A" },
-        { text: "机器学习中，无监督学习的关键特点是什么？", options: ["没有标准答案，自己发现数据结构", "有明确奖惩信号", "需要大量标注样本", "必须有人类老师干预"], correct: "A" },
-        { text: "“不给标准答案，但给奖惩信号，通过试错学习”描述的机器学习方式是？", options: ["强化学习", "监督学习", "无监督学习", "迁移学习"], correct: "A" },
-        { text: "人工神经网络（深度学习）的基本灵感来源于什么？", options: ["人脑神经元结构", "计算机CPU设计", "量子力学", "遗传算法"], correct: "A" },
-        { text: "哪个算法在1986年被重新发现并推广，解决了多层神经网络训练的核心问题？", options: ["反向传播", "梯度下降", "正向传播", "随机森林"], correct: "A" },
-        { text: "反向传播的基本步骤顺序是什么？", options: ["向前算→算误差→向后传→调权重", "向后传→调权重→向前算→算误差", "调权重→向前算→算误差→向后传", "算误差→向前算→向后传→调权重"], correct: "A" },
-        { text: "故事五指出，哪个硬件原本为游戏设计却意外推动了AI算力革命？", options: ["GPU（图形处理单元）", "CPU（中央处理器）", "TPU（张量处理器）", "FPGA"], correct: "A" },
-        { text: "相比于CPU，GPU在训练神经网络上的优势是？", options: ["大量核心并行处理简单计算", "单核心性能极强", "低功耗设计", "存储容量大"], correct: "A" },
-        { text: "根据PPT内容，机器学习本质的一句话总结是什么？", options: ["在数据中找模式", "模拟人类情感", "编写复杂规则", "创造全新数据"], correct: "A" },
-        { text: "牛顿的万有引力定律、门捷列夫周期表在本质上与机器学习一样，都是？", options: ["寻找模式", "进行随机猜测", "依赖GPU计算", "无法解释的原理"], correct: "A" },
-        { text: "机器学习目前的一个巨大局限性是？", options: ["只能发现相关性，分不清因果关系", "无法处理大量数据", "完全没有应用场景", "必须使用模拟神经元"], correct: "A" },
-        { text: "“更多的数据胜过更聪明的算法”这句名言强调了机器学习中什么的重要性？", options: ["海量数据", "算法复杂度", "模型可解释性", "硬件成本"], correct: "A" },
-        { text: "下列关于“相关不等于因果”的说法，正确的是？", options: ["机器学习容易混淆相关性和因果关系", "机器学习天然理解因果", "因果关系比相关性更易发现", "二者在AI中等价"], correct: "A" },
-        { text: "故事一中提到“机器学习不是告诉机器答案，而是？”", options: ["给它一堆例子让它自己猜答案", "写出完美规则", "依靠人类每步指导", "穷举所有可能"], correct: "A" },
-        { text: "在强化学习的“训狗模式”比喻中，“饼干”代表什么？", options: ["奖励信号", "惩罚信号", "监督标签", "神经网络参数"], correct: "A" },
-        { text: "以下哪项是监督学习最广泛的实际应用？", options: ["垃圾邮件过滤、人脸识别", "无标签聚类", "机器人试错走路", "画作风格分离"], correct: "A" },
-        { text: "根据材料，机器学到的规律往往“说不清楚”，类似于乒乓球老大爷的“感觉”，这说明什么？", options: ["模型缺乏可解释性", "机器没有真正学习", "数据量不够", "必须使用符号推理"], correct: "A" }
-    ];
-    
-    // 答案加密存储（数据库里存密文）
-    const questionBank = rawQuestions.map((q, idx) => {
-        return {
-            id: idx,
-            text: q.text,
-            options: [...q.options],
-            encryptedAns: encodeAnswer(q.correct)
-        };
-    });
-    
-    // 获取正确选项明文
-    function getCorrectAnswer(encrypted) {
-        return decodeAnswer(encrypted);
-    }
-    
-    // 存储用户选择（每个题目选中的选项字母 A/B/C/D）
-    let userSelections = new Array(questionBank.length).fill(null);
-    
-    const container = document.getElementById('questionsArea');
-    function renderQuestions() {
-        container.innerHTML = '';
-        questionBank.forEach((q, idx) => {
-            const card = document.createElement('div');
-            card.className = 'question-card';
-            const qNumber = idx + 1;
-            const titleDiv = document.createElement('div');
-            titleDiv.className = 'q-title';
-            titleDiv.innerHTML = `<span style="background:#ff00e5; padding:2px 10px; border-radius:20px; font-size:0.8rem;">Q${qNumber}</span><span style="color:#00f3ff;"> [5分]</span>`;
-            
-            const textDiv = document.createElement('div');
-            textDiv.className = 'q-text';
-            textDiv.innerText = q.text;
-            
-            const optionsDiv = document.createElement('div');
-            optionsDiv.className = 'options';
-            const letters = ['A', 'B', 'C', 'D'];
-            q.options.forEach((opt, optIdx) => {
-                const optLetter = letters[optIdx];
-                const radioId = `q_${idx}_${optLetter}`;
-                const optionLabel = document.createElement('div');
-                optionLabel.className = 'option';
-                const radio = document.createElement('input');
-                radio.type = 'radio';
-                radio.name = `question_${idx}`;
-                radio.value = optLetter;
-                radio.id = radioId;
-                if (userSelections[idx] === optLetter) {
-                    radio.checked = true;
-                }
-                radio.addEventListener('change', (e) => {
-                    if (e.target.checked) {
-                        userSelections[idx] = optLetter;
-                        checkAllAnswered();
-                    }
-                });
-                const label = document.createElement('label');
-                label.htmlFor = radioId;
-                label.innerText = `${optLetter}. ${opt}`;
-                optionLabel.appendChild(radio);
-                optionLabel.appendChild(label);
-                optionsDiv.appendChild(optionLabel);
-            });
-            card.appendChild(titleDiv);
-            card.appendChild(textDiv);
-            card.appendChild(optionsDiv);
-            container.appendChild(card);
-        });
-    }
-    
-    const submitBtn = document.getElementById('submitBtn');
-    function checkAllAnswered() {
-        const allFilled = userSelections.every(sel => sel !== null);
-        submitBtn.disabled = !allFilled;
-    }
-    
-    let submitted = false;
-    function calculateScore() {
-        let score = 0;
-        for (let i = 0; i < questionBank.length; i++) {
-            const userAns = userSelections[i];
-            const correctAns = getCorrectAnswer(questionBank[i].encryptedAns);
-            if (userAns === correctAns) {
-                score += 5;
+    // 加载历史记录
+    function loadHistoryRecords() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            try {
+                let records = JSON.parse(stored);
+                // 确保按时间升序（旧到新）
+                records.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+                return records;
+            } catch(e) {
+                return [];
             }
         }
-        return score;
+        return [];
     }
-    
-    function showResult(score, totalQuestions) {
-        const resultDiv = document.getElementById('resultPanel');
-        const maxScore = totalQuestions * 5;
-        const passed = score >= 80;
-        let encouragement = "";
-        if (passed) {
-            encouragement = "✨ 模式识别突破！霓虹之光为你加冕！ ✨<br>🎉 成功过关！你已掌握机器学习核心思想，继续向智能巅峰进发！ 🎉";
-        } else {
-            encouragement = "💪 微光不灭，再学再战！再温习《机器学习故事集》与《初识人工智能》，下次必破80分！ 💪<br>⚡ 每一个AI大神都从“找模式”开始，继续加油！ ⚡";
-        }
-        const passText = passed ? "【过关成功】" : "【未过关】";
-        const styleClass = passed ? "pass" : "fail";
-        resultDiv.style.display = "block";
-        resultDiv.innerHTML = `<div class="${styleClass}" style="font-size:1.4rem;">📊 最终得分: ${score} / ${maxScore} 分 &nbsp; ${passText}</div>
-                               <div style="margin-top:15px; font-size:1rem; letter-spacing:1px;">${encouragement}</div>
-                               <div style="margin-top:12px; font-size:0.8rem; opacity:0.7;">🏆 每题5分，共${totalQuestions}题，≥80分过关，不可重复提交 🏆</div>`;
-        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // 保存历史记录
+    function saveHistoryRecords(records) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
     }
-    
-    submitBtn.addEventListener('click', () => {
-        if (submitted) return;
-        const allAnswered = userSelections.every(sel => sel !== null);
-        if (!allAnswered) {
-            alert("⚠️ 请完成所有题目后，再提交测验！霓虹系统无法检测未作答题目。");
+
+    // 更新统计卡片
+    function updateStats(records) {
+        const count = records.length;
+        document.getElementById("totalCount").innerText = count;
+        if (count === 0) {
+            document.getElementById("avgScore").innerText = "—";
+            document.getElementById("maxScore").innerText = "—";
+            document.getElementById("minScore").innerText = "—";
+            document.getElementById("passCount").innerText = "0";
             return;
         }
-        const finalScore = calculateScore();
-        submitted = true;
-        submitBtn.disabled = true;
-        submitBtn.textContent = "✓ 已提交 · 终端锁定 ✓";
-        submitBtn.style.opacity = "0.8";
-        showResult(finalScore, questionBank.length);
-        // 禁用所有radio防止修改
-        const allRadios = document.querySelectorAll('input[type="radio"]');
-        allRadios.forEach(radio => radio.disabled = true);
+        const scores = records.map(r => r.score);
+        const sum = scores.reduce((a,b) => a + b, 0);
+        const avg = (sum / count).toFixed(1);
+        const maxVal = Math.max(...scores);
+        const minVal = Math.min(...scores);
+        const passNum = scores.filter(s => s >= 80).length;
+        document.getElementById("avgScore").innerText = avg;
+        document.getElementById("maxScore").innerText = maxVal;
+        document.getElementById("minScore").innerText = minVal;
+        document.getElementById("passCount").innerText = passNum;
+    }
+
+    // 渲染历史记录列表 (倒序显示最新在上)
+    function renderHistoryList(records) {
+        const container = document.getElementById("historyRecordList");
+        if (!records.length) {
+            container.innerHTML = '<div class="empty-history">✨ 暂无成绩记录，请先完成测验提交 ✨</div>';
+            return;
+        }
+        let html = '';
+        // 倒序展示（最新在上）
+        [...records].reverse().forEach((rec, idx) => {
+            const score = rec.score;
+            const passClass = score >= 80 ? 'badge-pass' : 'badge-fail';
+            const statusIcon = score >= 80 ? '✔️' : '⚠️';
+            // 格式化日期显示更加友好
+            let displayDate = rec.dateStr;
+            if (!displayDate && rec.timestamp) {
+                const d = new Date(rec.timestamp);
+                displayDate = `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+            } else if (!displayDate) {
+                displayDate = "未知时间";
+            }
+            html += `
+                <div class="record-item">
+                    <div class="record-date">📅 ${displayDate}</div>
+                    <div class="record-score ${passClass}">${statusIcon} ${score} 分</div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    // 原生Canvas绘制折线图（无任何外部依赖）
+    function drawTrendChart(records) {
+        const canvas = document.getElementById("trendCanvas");
+        if (!canvas) return;
+        const container = canvas.parentElement;
+        const width = container.clientWidth - 20;
+        // 设置合理高度
+        const height = 220;
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, width, height);
+        
+        // 背景填充
+        ctx.fillStyle = "#0a0a14";
+        ctx.fillRect(0, 0, width, height);
+        
+        if (!records.length) {
+            ctx.fillStyle = "#6688aa";
+            ctx.font = "12px monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("暂无数据，完成测验后显示趋势", width/2, height/2);
+            return;
+        }
+        
+        const scores = records.map(r => r.score);
+        const count = scores.length;
+        if (count === 1) {
+            // 单个点特殊绘制
+            const margin = { top: 20, right: 20, bottom: 25, left: 35 };
+            const graphW = width - margin.left - margin.right;
+            const graphH = height - margin.top - margin.bottom;
+            if (graphW > 0 && graphH > 0) {
+                const x = margin.left + graphW/2;
+                const y = margin.top + graphH - (scores[0] / 100) * graphH;
+                ctx.beginPath();
+                ctx.arc(x, y, 6, 0, 2*Math.PI);
+                ctx.fillStyle = "#ff00e5";
+                ctx.shadowBlur = 6;
+                ctx.shadowColor = "#ff00e5";
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = "#fff";
+                ctx.beginPath();
+                ctx.arc(x, y, 2.5, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.fillStyle = "#00f3ff";
+                ctx.font = "9px monospace";
+                ctx.fillText(`得分 ${scores[0]}`, x-20, y-6);
+            }
+            drawGridAndAxes(ctx, width, height, records);
+            return;
+        }
+        
+        // 多数据点：绘制折线
+        const margin = { top: 20, right: 20, bottom: 25, left: 35 };
+        const graphW = width - margin.left - margin.right;
+        const graphH = height - margin.top - margin.bottom;
+        if (graphW <= 0 || graphH <= 0) return;
+        
+        const getX = (index) => margin.left + (index / (count - 1)) * graphW;
+        const getY = (score) => margin.top + graphH - (score / 100) * graphH;
+        
+        // 绘制网格（水平线及0,25,50,75,100参考线）
+        ctx.save();
+        ctx.strokeStyle = "#00f3ff20";
+        ctx.lineWidth = 0.6;
+        for (let v = 0; v <= 100; v += 25) {
+            const y = getY(v);
+            ctx.beginPath();
+            ctx.moveTo(margin.left, y);
+            ctx.lineTo(margin.left + graphW, y);
+            ctx.stroke();
+            ctx.fillStyle = "#8ab3ff";
+            ctx.font = "9px monospace";
+            ctx.fillText(v.toString(), margin.left - 20, y + 3);
+        }
+        // 垂直辅助线（按索引）
+        for (let i = 0; i < count; i++) {
+            const x = getX(i);
+            ctx.beginPath();
+            ctx.moveTo(x, margin.top);
+            ctx.lineTo(x, margin.top + graphH);
+            ctx.stroke();
+        }
+        
+        // 绘制折线及填充
+        ctx.beginPath();
+        for (let i = 0; i < count; i++) {
+            const x = getX(i);
+            const y = getY(scores[i]);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = "#00f3ff";
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+        
+        // 填充渐变
+        ctx.lineTo(getX(count-1), getY(0));
+        ctx.lineTo(getX(0), getY(0));
+        ctx.closePath();
+        const gradient = ctx.createLinearGradient(0, margin.top, 0, margin.top+graphH);
+        gradient.addColorStop(0, "rgba(0,243,255,0.25)");
+        gradient.addColorStop(1, "rgba(0,243,255,0.02)");
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // 绘制数据点
+        for (let i = 0; i < count; i++) {
+            const x = getX(i);
+            const y = getY(scores[i]);
+            ctx.beginPath();
+            ctx.arc(x, y, 4.5, 0, 2*Math.PI);
+            ctx.fillStyle = "#ff00e5";
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = "#ff00e5";
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.arc(x, y, 2, 0, 2*Math.PI);
+            ctx.fill();
+        }
+        
+        // 标注最高分点
+        const maxScoreVal = Math.max(...scores);
+        const maxIdx = scores.indexOf(maxScoreVal);
+        const maxX = getX(maxIdx);
+        const maxY = getY(maxScoreVal);
+        ctx.fillStyle = "#ffcc44";
+        ctx.font = "bold 9px monospace";
+        ctx.shadowBlur = 0;
+        ctx.fillText(`🏆 ${maxScoreVal}`, maxX+5, maxY-6);
+        
+        // X轴文字: 第几次
+        ctx.fillStyle = "#8ab3ff";
+        ctx.font = "9px monospace";
+        ctx.textAlign = "center";
+        for (let i = 0; i < count; i++) {
+            const x = getX(i);
+            ctx.fillText(`${i+1}`, x, margin.top + graphH + 12);
+        }
+        ctx.fillStyle = "#00f3ff";
+        ctx.font = "bold 9px monospace";
+        ctx.fillText("测验次数 →", width/2, height-6);
+        ctx.save();
+        ctx.translate(18, height/2);
+        ctx.rotate(-Math.PI/2);
+        ctx.fillStyle = "#00f3ff";
+        ctx.fillText("得分", -6, 0);
+        ctx.restore();
+        
+        drawGridAndAxes(ctx, width, height, records); // 实际上网格已画过，此函数仅为了统一标注轴线
+    }
+    
+    function drawGridAndAxes(ctx, width, height, records) {
+        // 兼容函数，不做额外操作，避免重复；已经画过网格，此函数占位保持一致性
+        const margin = { top: 20, right: 20, bottom: 25, left: 35 };
+        ctx.beginPath();
+        ctx.strokeStyle = "#00f3ff60";
+        ctx.lineWidth = 1;
+        ctx.moveTo(margin.left, margin.top);
+        ctx.lineTo(margin.left, height - margin.bottom);
+        ctx.lineTo(width - margin.right, height - margin.bottom);
+        ctx.stroke();
+    }
+
+    // 清空所有历史
+    function clearAllHistory() {
+        if (confirm("⚠️ 危险操作：这将永久删除所有历史成绩记录，且不可恢复。是否继续？")) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+            refreshAllData();
+        }
+    }
+
+    // 刷新页面数据（重新加载、更新UI、重绘曲线）
+    function refreshAllData() {
+        const records = loadHistoryRecords();
+        updateStats(records);
+        renderHistoryList(records);
+        drawTrendChart(records);
+    }
+
+    // 返回测验主页（因为独立页面，可跳转回主页面，主页面假定为 index.html 或当前页同目录）
+    function backToTest() {
+        // 尝试跳转到测验主页面（通常为提供完整测验的页面，用户可自定义，这里默认跳转到上一页或根目录）
+        // 如果无法确定，提供一个友好提示，也可以使用 history.back，但更稳的做法是提示用户。
+        if (document.referrer && document.referrer.includes(window.location.host)) {
+            window.history.back();
+        } else {
+            // 尝试重定向到主测验页面（假设测验页与当前history页面同级且命名为 index.html 或机器学习测验.html）
+            window.location.href = "./机器学习基础知识过关测试.html";
+            // 如果上述跳转失败或不确定，展示引导
+            setTimeout(() => {
+                alert("未找到测验主页面，请手动回到测验页面。若当前是独立窗口，可关闭此页。");
+            }, 100);
+        }
+    }
+
+    // 监听页面加载 以及 窗口大小变化重新绘制曲线
+    window.addEventListener("load", () => {
+        refreshAllData();
+        // 绑定按钮事件
+        document.getElementById("refreshBtn").addEventListener("click", refreshAllData);
+        document.getElementById("clearAllHistoryBtn").addEventListener("click", clearAllHistory);
+        document.getElementById("backToTestBtn").addEventListener("click", backToTest);
     });
     
-    renderQuestions();
-    submitBtn.disabled = true;
-    // 确保答案在源码中不可见：题库内无明文正确选项存储，只有加密字段。
+    window.addEventListener("resize", () => {
+        const records = loadHistoryRecords();
+        drawTrendChart(records);
+    });
+    
+    // 额外监听存储事件，当其他页面（测验页）更新历史时自动刷新
+    window.addEventListener("storage", (e) => {
+        if (e.key === STORAGE_KEY) {
+            refreshAllData();
+        }
+    });
 </script>
 </body>
 </html>
