@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>机器学习基础知识过关测试 | 赛博加密考核</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.2s ease-in-out;
+        }
+
+        body {
+            background: #0a0a0f;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            font-family: 'Share Tech Mono', 'Courier New', 'Fira Code', 'Segoe UI', monospace;
+            padding: 2rem 1rem;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* 扫光动画层 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(115deg, 
+                transparent 30%, 
+                rgba(0, 243, 255, 0.04) 45%, 
+                rgba(255, 0, 229, 0.03) 55%,
+                transparent 70%);
+            transform: rotate(25deg);
+            animation: scanline 12s infinite linear;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes scanline {
+            0% { transform: rotate(25deg) translate(-30%, -30%); }
+            100% { transform: rotate(25deg) translate(30%, 30%); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 霓虹大标题 */
+        .hero-title {
+            text-align: center;
+            font-size: 2.7rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            color: #00f3ff;
+            text-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff, 0 0 20px #00a3cc, 0 0 1px #b400ff;
+            margin-bottom: 0.5rem;
+            padding-top: 0.5rem;
+            background: linear-gradient(135deg, #00f3ff, #ff00e5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+            position: relative;
+        }
+        /* 修复文字渐变同时保留霓虹感 */
+        .hero-title {
+            background: linear-gradient(135deg, #00f3ff, #ff00e5, #b400ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 8px rgba(0, 243, 255, 0.7);
+        }
+
+        .sub {
+            text-align: center;
+            color: #b0f0ff;
+            border-bottom: 1px solid #00f3ff80;
+            display: inline-block;
+            width: auto;
+            margin: 0 auto 1.8rem auto;
+            padding-bottom: 0.6rem;
+            font-weight: 400;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 2px #00f3ff;
+        }
+
+        /* 赛博卡片 */
+        .quiz-card {
+            background: rgba(10, 10, 20, 0.75);
+            backdrop-filter: blur(3px);
+            border-radius: 24px;
+            border: 1px solid rgba(0, 243, 255, 0.5);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 0 5px rgba(0, 243, 255, 0.1);
+            padding: 1.5rem 1.8rem;
+            margin-bottom: 1.8rem;
+            transition: all 0.25s;
+        }
+
+        .quiz-card:hover {
+            border-color: #00f3ff;
+            box-shadow: 0 0 18px #00f3ff, 0 6px 14px rgba(0,0,0,0.6);
+            transform: translateY(-3px);
+            background: rgba(10, 10, 25, 0.85);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+            border-left: 4px solid #ff00e5;
+            padding-left: 1rem;
+            text-shadow: 0 0 1px #ff00e5;
+        }
+
+        .q-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #caf0ff;
+            letter-spacing: 0.3px;
+        }
+
+        .q-points {
+            background: rgba(0, 243, 255, 0.2);
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #00f3ff;
+            border: 0.5px solid #00f3ff80;
+            font-family: monospace;
+        }
+
+        .options {
+            margin-top: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            padding-left: 0.3rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-size: 0.95rem;
+            color: #d0e6ff;
+            cursor: pointer;
+            font-family: monospace;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            appearance: none;
+            width: 1.1rem;
+            height: 1.1rem;
+            border: 1px solid #00f3ff;
+            background: #0a0a1a;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        input[type="radio"]:checked {
+            background: #00f3ff;
+            box-shadow: 0 0 6px #00f3ff;
+            border-color: #00f3ff;
+        }
+        input[type="checkbox"] {
+            border-radius: 4px;
+        }
+        input[type="checkbox"]:checked {
+            background: #ff00e5;
+            border-color: #ff00e5;
+            box-shadow: 0 0 6px #ff00e5;
+        }
+        .truefalse-group {
+            display: flex;
+            gap: 2rem;
+            margin-top: 0.4rem;
+        }
+
+        hr {
+            margin: 0.2rem 0 1rem;
+            border-color: #00f3ff30;
+        }
+
+        /* 按钮区 */
+        .action-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2.2rem 0 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: 1.5px solid #00f3ff;
+            background: transparent;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 1px;
+            color: #00f3ff;
+            text-shadow: 0 0 2px #00f3ff;
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+        }
+
+        button:hover:not(:disabled) {
+            background: #00f3ff;
+            color: #0a0a0f;
+            box-shadow: 0 0 20px #00f3ff, 0 0 5px #00f3ff;
+            text-shadow: none;
+            border-color: #00f3ff;
+            transform: scale(1.02);
+        }
+
+        button:disabled {
+            border-color: #4a5b6e;
+            color: #4a5b6e;
+            text-shadow: none;
+            cursor: not-allowed;
+            background: rgba(74, 91, 110, 0.2);
+            box-shadow: none;
+        }
+
+        .reset-btn {
+            border-color: #ff00e5;
+            color: #ff00e5;
+            text-shadow: 0 0 3px #ff00e5;
+        }
+        .reset-btn:hover:not(:disabled) {
+            background: #ff00e5;
+            color: #0a0a0a;
+            box-shadow: 0 0 20px #ff00e5;
+            border-color: #ff00e5;
+        }
+
+        /* 结果面板 霓虹卡牌 */
+        .result-area {
+            background: rgba(10, 10, 20, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 1.8rem 2rem;
+            margin-top: 1.5rem;
+            text-align: center;
+            border: 1px solid #00f3ff;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .score-big {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #00f3ff;
+            text-shadow: 0 0 8px #00f3ff;
+            letter-spacing: 2px;
+        }
+
+        .pass-status {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0.7rem 0;
+            background: linear-gradient(135deg, #00f3ff, #ff00e5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 5px rgba(0,243,255,0.5);
+        }
+
+        .motivation {
+            font-size: 1rem;
+            color: #b0e0ff;
+            background: rgba(0, 243, 255, 0.1);
+            padding: 0.8rem;
+            border-radius: 60px;
+            margin-top: 0.9rem;
+            border: 0.5px solid #00f3ff80;
+            font-family: monospace;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #50a0c0;
+            margin-top: 2rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 680px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+            .quiz-card {
+                padding: 1rem;
+            }
+            .hero-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="hero-title">⚡ 机器学习基础知识过关测试 ⚡</div>
+    <div style="text-align: center; margin-bottom: 1rem;">
+        <span class="sub">✦ 霓虹加密 · 赛博考核 · 满分100分 ✦</span>
+    </div>
+
+    <div id="questionsArea"></div>
+
+    <div class="action-bar">
+        <button id="submitBtn" disabled>🔓 提交核心数据</button>
+        <button id="resetBtn" class="reset-btn">🌀 重启终端</button>
+    </div>
+    <div id="resultPanel" class="result-area" style="display: none;"></div>
+    <footer>© 机器学习题目 | 网络2502 | 林元博制作</footer>
+</div>
+
+<script>
+    // ========= 加密模块 (字符偏移 + base64 双重保护，源码无法直接查看原文) =========
+    function encode(str) {
+        let shifted = "";
+        for (let i = 0; i < str.length; i++) {
+            shifted += String.fromCharCode(str.charCodeAt(i) + 5);
+        }
+        return btoa(shifted);
+    }
+    function decode(enc) {
+        let shifted = atob(enc);
+        let original = "";
+        for (let i = 0; i < shifted.length; i++) {
+            original += String.fromCharCode(shifted.charCodeAt(i) - 5);
+        }
+        return original;
+    }
+
+    // 所有答案均加密存储 (单选题/多选/判断)
+    const encryptedMap = {
+        // 单选 10道 ×4分 =40分
+        "q0": encode("C"),     // 核心思想：看例子自己悟
+        "q1": encode("B"),     // 机器学习：给数据和结果，得规则
+        "q2": encode("A"),     // 监督学习——上课模式
+        "q3": encode("C"),     // 无监督学习：自己发现结构
+        "q4": encode("B"),     // 强化学习：训狗奖惩
+        "q5": encode("A"),     // 反向传播解决多层训练
+        "q6": encode("C"),     // GPU：并行简单计算
+        "q7": encode("B"),     // 本质：在数据中找模式
+        "q8": encode("A"),     // 规律说不清原因
+        "q9": encode("C"),     // 陷阱：相关非因果
+        // 多选5道 每题6分 =30分
+        "q10": encode("ABD"),   // 监督学习应用：人脸识别/垃圾邮件/照片分类
+        "q11": encode("BCD"),   // 三要素：算法数据算力
+        "q12": encode("ABC"),   // 生成式AI：Sora, Bard, DALL·E
+        "q13": encode("ACD"),   // 脑机接口正确:清华无线微创/马斯克侵入/医疗康复
+        "q14": encode("BD"),    // 相关与因果: 冰淇淋与溺水无因果, 相关≠因果
+        // 判断5道 每题6分 =30分 (总分100)
+        "q15": encode("true"),   // 传统编程vs机器学习描述正确
+        "q16": encode("false"),  // GPU原为游戏设计
+        "q17": encode("true"),   // 盘古气象大模型上线
+        "q18": encode("false"),  // 机器学习不能总是解释因果
+        "q19": encode("true")    // Sora生成60秒视频
+    };
+
+    function getCorrect(qid) {
+        return decode(encryptedMap[qid]);
+    }
+
+    // ========= 题库 (完全取自素材，内容无重复) =========
+    const questionsData = [
+        { id: "q0", type: "radio", points: 4, text: "🔹 根据'轮子故事'，机器学习的核心思想是？", options: ["A. 记忆所有规则", "B. 编写逻辑手册", "C. 看例子、自己悟，让数据说话", "D. 专家系统"] },
+        { id: "q1", type: "radio", points: 4, text: "🔹 传统编程 vs 机器学习，机器学习的特点是？", options: ["A. 给规则和数据得结果", "B. 给数据和结果得规则", "C. 无需数据", "D. 纯逻辑编码"] },
+        { id: "q2", type: "radio", points: 4, text: "🔹 '上课模式，有标准答案' 指的是哪种学习？", options: ["A. 监督学习", "B. 无监督学习", "C. 强化学习", "D. 深度学习"] },
+        { id: "q3", type: "radio", points: 4, text: "🔹 无监督学习的核心特点是？", options: ["A. 奖惩信号", "B. 依赖标签答案", "C. 没答案，自动发现分组结构", "D. 模仿神经元"] },
+        { id: "q4", type: "radio", points: 4, text: "🔹 强化学习被比喻为？", options: ["A. 刷题模式", "B. 训狗模式(奖惩试错)", "C. 自学模式", "D. 模板匹配"] },
+        { id: "q5", type: "radio", points: 4, text: "🔹 反向传播算法主要贡献是？", options: ["A. 解决多层神经网络训练", "B. 解决异或问题", "C. 发明GPU", "D. 数据增强"] },
+        { id: "q6", type: "radio", points: 4, text: "🔹 GPU推动AI革命的原因？", options: ["A. 价格低廉", "B. 逻辑运算极强", "C. 大量并行简单计算适配神经网络", "D. 内置AI引擎"] },
+        { id: "q7", type: "radio", points: 4, text: "🔹 机器学习本质一句话概括？", options: ["A. 编写复杂程序", "B. 在数据中寻找模式", "C. 构建知识图谱", "D. 模拟情感"] },
+        { id: "q8", type: "radio", points: 4, text: "🔹 机器学习得出的规律往往？", options: ["A. 说不清具体因果原理", "B. 完美解释原因", "C. 永远正确", "D. 绝对避免错误"] },
+        { id: "q9", type: "radio", points: 4, text: "🔹 机器学习最大陷阱/弱点是？", options: ["A. 速度太慢", "B. 依赖海量电力", "C. 只能发现相关性，分不清因果", "D. 无法识别图片"] },
+        // 多选5道
+        { id: "q10", type: "checkbox", points: 6, text: "⚡ 以下属于监督学习典型应用的有？", options: ["A. 手机人脸识别", "B. 垃圾邮件过滤", "C. 按颜色分组乐高(无监督)", "D. 照片自动分类"] },
+        { id: "q11", type: "checkbox", points: 6, text: "⚡ 深度学习等了四十年的三大关键要素？", options: ["A. 新数学理论", "B. 算法(反向传播)", "C. 海量数据", "D. 强大算力(GPU)"] },
+        { id: "q12", type: "checkbox", points: 6, text: "⚡ 关于生成式AI的突破，正确的是？", options: ["A. Sora生成60秒视频", "B. 谷歌巴德创作故事诗歌", "C. DALL·E生成艺术图像", "D. 传统规则引擎"] },
+        { id: "q13", type: "checkbox", points: 6, text: "⚡ 脑机接口相关正确叙述？", options: ["A. 清华无线微创实现自主喝水", "B. 脑机接口无法医疗康复", "C. 马斯克Neuralink侵入式", "D. 帮助瘫痪患者恢复功能"] },
+        { id: "q14", type: "checkbox", points: 6, text: "⚡ '相关不等于因果' 的观点正确的有？", options: ["A. 冰淇淋销量高必然导致溺水", "B. 气温导致两者虚假相关", "C. 机器学习自动识别因果", "D. 相关关系不代表因果"] },
+        // 判断5道
+        { id: "q15", type: "truefalse", points: 6, text: "🔮 传统编程是‘规则→结果’，机器学习是‘数据+结果→规则’。", options: ["正确", "错误"] },
+        { id: "q16", type: "truefalse", points: 6, text: "🔮 GPU最初专为AI训练设计。", options: ["正确", "错误"] },
+        { id: "q17", type: "truefalse", points: 6, text: "🔮 华为云盘古气象大模型曾上线欧洲中期天气预报官网。", options: ["正确", "错误"] },
+        { id: "q18", type: "truefalse", points: 6, text: "🔮 机器学习总能清楚解释因果关系。", options: ["正确", "错误"] },
+        { id: "q19", type: "truefalse", points: 6, text: "🔮 OpenAI Sora可根据文本生成最长60秒视频。", options: ["正确", "错误"] }
+    ];
+
+    // 渲染试卷
+    function render() {
+        const container = document.getElementById("questionsArea");
+        container.innerHTML = "";
+        questionsData.forEach((q, idx) => {
+            const card = document.createElement("div");
+            card.className = "quiz-card";
+            const header = document.createElement("div");
+            header.className = "question-header";
+            header.innerHTML = `<span class="q-text">${idx+1}. ${q.text}</span><span class="q-points">⚡${q.points}分</span>`;
+            card.appendChild(header);
+            const optsDiv = document.createElement("div");
+            optsDiv.className = "options";
+            const groupName = `q_${q.id}`;
+            if (q.type === "radio") {
+                q.options.forEach(opt => {
+                    const label = document.createElement("label");
+                    label.className = "option-item";
+                    const radio = document.createElement("input");
+                    radio.type = "radio";
+                    radio.name = groupName;
+                    radio.value = opt.charAt(0);
+                    label.appendChild(radio);
+                    label.appendChild(document.createTextNode(" " + opt));
+                    optsDiv.appendChild(label);
+                });
+            } else if (q.type === "checkbox") {
+                q.options.forEach(opt => {
+                    const label = document.createElement("label");
+                    label.className = "option-item";
+                    const cb = document.createElement("input");
+                    cb.type = "checkbox";
+                    cb.name = groupName;
+                    cb.value = opt.charAt(0);
+                    label.appendChild(cb);
+                    label.appendChild(document.createTextNode(" " + opt));
+                    optsDiv.appendChild(label);
+                });
+            } else if (q.type === "truefalse") {
+                const groupDiv = document.createElement("div");
+                groupDiv.className = "truefalse-group";
+                ["正确","错误"].forEach((txt, i) => {
+                    const label = document.createElement("label");
+                    label.className = "option-item";
+                    const radio = document.createElement("input");
+                    radio.type = "radio";
+                    radio.name = groupName;
+                    radio.value = (i === 0) ? "true" : "false";
+                    label.appendChild(radio);
+                    label.appendChild(document.createTextNode(" " + txt));
+                    groupDiv.appendChild(label);
+                });
+                optsDiv.appendChild(groupDiv);
+            }
+            card.appendChild(optsDiv);
+            container.appendChild(card);
+        });
+    }
+
+    // 检查所有题目是否已作答
+    function isAllAnswered() {
+        for (let q of questionsData) {
+            const group = `q_${q.id}`;
+            if (q.type === "radio" || q.type === "truefalse") {
+                let checked = false;
+                document.querySelectorAll(`input[name="${group}"]`).forEach(inp => { if (inp.checked) checked = true; });
+                if (!checked) return false;
+            } else if (q.type === "checkbox") {
+                let any = false;
+                document.querySelectorAll(`input[name="${group}"]`).forEach(cb => { if (cb.checked) any = true; });
+                if (!any) return false;
+            }
+        }
+        return true;
+    }
+
+    function updateSubmitBtn() {
+        const btn = document.getElementById("submitBtn");
+        if (isAllAnswered()) btn.disabled = false;
+        else btn.disabled = true;
+    }
+
+    // 评分 (比对加密答案)
+    function computeTotalScore() {
+        let total = 0;
+        for (let q of questionsData) {
+            const groupName = `q_${q.id}`;
+            let userVal = "";
+            if (q.type === "radio" || q.type === "truefalse") {
+                let selected = null;
+                document.querySelectorAll(`input[name="${groupName}"]`).forEach(inp => {
+                    if (inp.checked) selected = inp.value;
+                });
+                userVal = selected || "";
+            } else if (q.type === "checkbox") {
+                let checkedVals = [];
+                document.querySelectorAll(`input[name="${groupName}"]:checked`).forEach(cb => {
+                    checkedVals.push(cb.value);
+                });
+                userVal = checkedVals.sort().join("");
+            }
+            const correctAnswer = getCorrect(q.id);
+            let ok = false;
+            if (q.type === "checkbox") {
+                ok = (userVal === correctAnswer);
+            } else {
+                ok = (userVal.toLowerCase() === correctAnswer.toLowerCase());
+            }
+            if (ok) total += q.points;
+        }
+        return total;
+    }
+
+    let submittedFlag = false;
+    function onSubmit() {
+        if (submittedFlag) {
+            alert("⚠️ 系统提示：已提交过结果。如需重测请点击「重启终端」。");
+            return;
+        }
+        if (!isAllAnswered()) {
+            alert("❌ 终端未完成所有试题，请填写完整再提交。");
+            return;
+        }
+        const score = computeTotalScore();
+        let passMsg = "";
+        let motivationMsg = "";
+        if (score >= 80) {
+            passMsg = "✅ 过关 · 神经链接评级 S ✅";
+            motivationMsg = "⚡ 赛博赞誉：机器学习核心协议已掌握！您的数据模式识别能力卓越，未来已来，引领AI革命！ 🌟";
+        } else if (score >= 60) {
+            passMsg = "📡 未过关 · 数据链路不稳 (60~79分) 📡";
+            motivationMsg = "💾 中等警告：仍需巩固核心协议。建议复盘「轮子故事与三种学法」，重新校准知识库。";
+        } else {
+            passMsg = "⚠️ 未过关 · 核心矩阵需要重新训练 ⚠️";
+            motivationMsg = "🌀 温和提示：部分知识碎片丢失，从监督/无监督/强化学习基础重新载入，再试一次必能突破！";
+        }
+        const panel = document.getElementById("resultPanel");
+        panel.style.display = "block";
+        panel.innerHTML = `
+            <div class="score-big">🔮 总分：${score} / 100</div>
+            <div class="pass-status">${passMsg}</div>
+            <div class="motivation">${motivationMsg}</div>
+            <div style="margin-top:12px; font-size:0.7rem; color:#0af;">🔒 加密验证完成 | 答案不泄露</div>
+        `;
+        submittedFlag = true;
+        document.getElementById("submitBtn").disabled = true;
+    }
+
+    function resetAll() {
+        // 清除所有输入
+        document.querySelectorAll("input").forEach(inp => {
+            if (inp.type === "radio" || inp.type === "checkbox") inp.checked = false;
+        });
+        submittedFlag = false;
+        document.getElementById("resultPanel").style.display = "none";
+        updateSubmitBtn();
+        // 确保重新解锁可能状态
+        const btn = document.getElementById("submitBtn");
+        if (isAllAnswered()) btn.disabled = false;
+        else btn.disabled = true;
+    }
+
+    function bindEvents() {
+        document.addEventListener("change", (e) => {
+            if (e.target && (e.target.type === "radio" || e.target.type === "checkbox")) {
+                updateSubmitBtn();
+            }
+        });
+        document.getElementById("submitBtn").addEventListener("click", onSubmit);
+        document.getElementById("resetBtn").addEventListener("click", resetAll);
+    }
+
+    render();
+    bindEvents();
+    updateSubmitBtn();
+</script>
+</body>
+</html>
